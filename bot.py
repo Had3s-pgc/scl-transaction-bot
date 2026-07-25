@@ -315,7 +315,7 @@ async def scrim_reminder():
 
         delta    = scrim_dt - now
         scrim_id = f"{scrim['team1']}|{scrim['team2']}"
-        league_code = scrim.get("league_code", f"PGC{random.randint(100, 999)}")
+        league_code = scrim.get("league_code", f"SCL{random.randint(100, 999)}")
 
         t1_key = scrim["team1"].lower()
         t2_key = scrim["team2"].lower()
@@ -540,9 +540,9 @@ async def claim_official_role(guild: discord.Guild, key: str, label: str, member
 
 def build_seeding_content(order, points, ended=False, qualifiers=None):
     if not ended:
-        desc = "# PGC Season's Seeding 🎯\n**Current seedings based on team scores.**"
+        desc = "# SCL Season's Seeding 🎯\n**Current seedings based on team scores.**"
     else:
-        desc = f"# PGC Seeding Results 🏆\n**Top {qualifiers} teams have moved on! Congratulations!**"
+        desc = f"# SCL Seeding Results 🏆\n**Top {qualifiers} teams have moved on! Congratulations!**"
     lines = []
     for rank, name in enumerate(order, 1):
         d   = teams.get(name, {})
@@ -825,7 +825,7 @@ class ScrimThingy(discord.ui.View):
 # ── Message builders ──────────────────────────────────────────────────────────
 def build_scrim_content(time: str, date: str, team1: str, team2: str) -> str:
     return (
-        "# ⚔️ PGC Official Scrim\n"
+        "# ⚔️ SCL Official Scrim\n"
         "## Scrim Details:\n\n"
         f"> Time: **{time}**\n"
         f"> Day: **{date}**\n"
@@ -1019,7 +1019,7 @@ class ScrimProposalView(discord.ui.View):
                 "time": self.time, "date": self.date,
                 "team1": self.t1_key.title(), "team2": self.t2_key.title(),
                 "datetime_utc": parse_scrim_datetime(self.time, self.date),
-                "league_code": f"PGC{random.randint(100, 999)}"})
+                "league_code": f"SCL{random.randint(100, 999)}"})
             save_scrims(scrims_schedule)
         await update_scrim_channel_emoji(interaction.guild, self.t1_key, self.t2_key, "⏳")
 
@@ -1169,7 +1169,7 @@ async def scrim_emoji_guide(interaction: discord.Interaction):
 class InfoLayout(discord.ui.LayoutView):
     container = discord.ui.Container(
         discord.ui.TextDisplay(
-            "# 🤖 PGC Command Guide\n"
+            "# 🤖 SCL Command Guide\n"
             "What every command does and who can use it:\n\n"
             "## 👤 Anyone\n"
             "> **/info**: Shows this guide.\n"
@@ -1209,7 +1209,7 @@ class InfoLayout(discord.ui.LayoutView):
             "> **/create_seeding**: Starts a seeding round and tracks team scores.\n"
             "> **/edit_seeding**: Manually adds or removes wins/points from a team in seeding.\n"
             "> **/end_seeding**: Ends the seeding round and displays which teams advanced.\n\n"
-            "PGC Season Management System - Created by Had3s"
+            "SCL Season Management System - Created by Had3s"
         )
     )
 
@@ -1225,7 +1225,7 @@ async def info(interaction: discord.Interaction):
 Free_commands = {
     "🚀 Getting Started": [
         "## How this bot works\n"
-        "PGC organizes your server around **teams**, **scrims** (practice matches), and **seeding** (a scoring round to decide who advances).\n\n"
+        "SCL organizes your server around **teams**, **scrims** (practice matches), and **seeding** (a scoring round to decide who advances).\n\n"
         "**If you're a player:** join a team via invite (`/check_invites`) or ask a captain to send you one (`/invite_player`). "
         "Once you're on a team you'll automatically get pinged for scrims and see your record with `/player_info`.\n\n"
         "**If you're a captain:** you run your team's invites and roster. Use `/invite_player` to recruit, "
@@ -1311,8 +1311,8 @@ def build_guide_text(category: str) -> str:
     else:
         total_commands = Free_commands.get(category, [])
     if not total_commands:
-        return "# 🤖 PGC Bot Guide\nCategory not found."
-    return "# 🤖 PGC Bot Guide\n" + "\n\n".join(total_commands)
+        return "# 🤖 SCL Bot Guide\nCategory not found."
+    return "# 🤖 SCL Bot Guide\n" + "\n\n".join(total_commands)
 
 
 class CommandChoose(Select):
@@ -1337,7 +1337,7 @@ class CommandGuideLayout(discord.ui.LayoutView):
         self.add_item(row)
 
 
-@had3sbot.tree.command(name="command_guide", description="Show the command guide with all PGC bot commands", guild=Server_id)
+@had3sbot.tree.command(name="command_guide", description="Show the command guide with all SCL bot commands", guild=Server_id)
 async def commands_panel(interaction: discord.Interaction):
     da_commands = next(iter(Free_commands))
     view = CommandGuideLayout(da_commands)
@@ -1388,7 +1388,7 @@ async def create_team(interaction: discord.Interaction, team_name: str,
     if co_captain_name:
         await grant_general_cocaptain(interaction.guild, co_captain_name.id)
     await log_transaction(interaction,
-        f"# **{team_name.title()}** joined PGC\n"
+        f"# **{team_name.title()}** joined SCL\n"
         f"> ### Captain: {captain_name.mention}\n"
         f"> ### Co-Captain: {co_captain_name.mention if co_captain_name else 'None'}")
     await interaction.followup.send(
@@ -2039,7 +2039,7 @@ async def cmd_set_scrim(interaction: discord.Interaction, time: str, date: str,
     scrims_schedule.append({"time": time, "date": date,
                              "team1": first_team.title(), "team2": second_team.title(),
                              "datetime_utc": parse_scrim_datetime(time, date),
-                             "league_code": f"PGC{random.randint(100, 999)}"})
+                             "league_code": f"SCL{random.randint(100, 999)}"})
     save_scrims(scrims_schedule)
 
 
@@ -2173,7 +2173,7 @@ async def cmd_set_time(interaction: discord.Interaction, time: str, date: str):
         await post_scrim_to_channels(interaction.guild, key, time, date, t1_key.title(), t2_key.title())
         scrims_schedule.append({"time": time, "date": date, "team1": t1_key.title(), "team2": t2_key.title(),
                                  "datetime_utc": parse_scrim_datetime(time, date),
-                                 "league_code": f"PGC{random.randint(100, 999)}"})
+                                 "league_code": f"SCL{random.randint(100, 999)}"})
         save_scrims(scrims_schedule)
     await update_scrim_channel_emoji(interaction.guild, t1_key, t2_key, "⏳")
 
@@ -2303,7 +2303,7 @@ async def cmd_end_scrim(interaction: discord.Interaction, scrim: str, score1: in
                   else f"{team2.title()} wins" if score2 > score1 else "Draw")
     completed_content = (
         "# ✅ Scrim Completed\n"
-        "> ## **Official Scrim For PGC:**\n\n"
+        "> ## **Official Scrim For SCL:**\n\n"
         f"> **First Team:** {team1.title()}\n**Second Team:** {team2.title()}\n\n"
         f"> **Result:** {result_str} **{score1} - {score2}**"
     )
@@ -2576,7 +2576,7 @@ async def send_files(interaction: discord.Interaction):
     if not files:
         await interaction.followup.send("No data files found.", ephemeral=True); return
     await interaction.followup.send(
-        f"# PGC Data Backup\n>>> **{len(files)} files** attached.\n*Keep these safe!*",
+        f"# SCL Data Backup\n>>> **{len(files)} files** attached.\n*Keep these safe!*",
         files=files, ephemeral=True)
 
 
