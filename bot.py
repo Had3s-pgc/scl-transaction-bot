@@ -1574,7 +1574,7 @@ async def list_teams(interaction: discord.Interaction):
     if not teams:
         await interaction.response.send_message("No teams exist.", ephemeral=True); return
     team_list = "\n".join(f"* **{n.title()}**" for n in teams)
-    await interaction.response.send_message(f"## 🏆 Current Teams:\n>>> {team_list}", ephemeral=True)
+    await interaction.response.send_message(f"## 🏆 Current Teams:\n>>> {team_list}")
 
 
 @had3sbot.tree.command(name="roster", description="Show the roster of a team", guild=Server_id)
